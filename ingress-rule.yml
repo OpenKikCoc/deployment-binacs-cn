@@ -1,0 +1,45 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+  name: ingress-grpc
+  namespace: binacs-cn
+spec:
+  rules:
+  - host: binacs.cn
+    http:
+      paths:
+      - backend:
+          serviceName: binacs-cn-service
+          servicePort: 443
+  - host: prometheus.binacs.cn
+    http:
+      paths:
+      - backend:
+          serviceName: monitor-service
+          servicePort: 9090
+  - host: pushgateway.binacs.cn
+    http:
+      paths:
+      - backend:
+          serviceName: monitor-service
+          servicePort: 9091
+  - host: grafana.binacs.cn
+    http:
+      paths:
+      - backend:
+          serviceName: monitor-service
+          servicePort: 8080
+  - host: jenkins.binacs.cn
+    http:
+      paths:
+      - backend:
+          serviceName: jenkins-service
+          servicePort: 8080
+  tls:
+  - secretName: grpcs-secret
+    hosts:
+      - binacs.cn

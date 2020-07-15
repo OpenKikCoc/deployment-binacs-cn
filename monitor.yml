@@ -1,0 +1,84 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: monitor-deployment
+  namespace: binacs-cn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: monitor
+  template:
+    metadata:
+      labels:
+        app: monitor
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+        labelName: monitor
+      containers:
+      - name: prometheus-pushgateway
+        image: prom/pushgateway:latest
+        ports:
+          - name: pushgw-port
+            containerPort: 9091
+            protocol: TCP
+      - name: prometheus
+        image: prom/prometheus:latest
+        args:
+          - --web.enable-lifecycle
+          - --config.file=/etc/prometheus/prometheus.yml
+          - --storage.tsdb.path=/etc/prometheus/data
+          #- --web.external-url=monitor/prometheus
+        ports:
+          - name: prom-port
+            containerPort: 9090
+            protocol: TCP
+        volumeMounts:
+        - name: monitor-prometheus-hostpath
+          mountPath: /etc/prometheus
+        - name: monitor-time
+          mountPath: /etc/localtime
+      - name: grafana
+        image: grafana/grafana:latest
+        env:
+        - name: GF_DEFAULT_INSTANCE_NAME
+          value: grafana-docker
+        #- name: GF_SECURITY_ADMIN_USER
+        #  value: 
+        #- name: GF_SECURITY_ADMIN_PASSWORD
+        #  value:
+        volumeMounts:
+        - name: monitor-time
+          mountPath: /etc/localtime
+      volumes:
+      - name: monitor-prometheus-hostpath
+        hostPath:
+          path: /root/prometheus
+      - name: monitor-grafana-hostpath
+        hostPath:
+          path: /root/grafana-storage
+      - name: monitor-time
+        hostPath:
+          path: /etc/localtime
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: monitor-service
+  namespace: binacs-cn
+spec:
+  type: ClusterIP
+  selector:
+    app: monitor
+  ports:
+  - name: prometheus
+    port: 9090
+    targetPort: 9090
+  - name: pushgateway
+    port: 9091
+    targetPort: 9091
+  - name: grafana
+    port: 8080
+    targetPort: 8080

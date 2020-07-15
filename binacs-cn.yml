@@ -1,0 +1,65 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: binacs-cn-deployment
+  namespace: binacs-cn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: binacs-cn
+  template:
+    metadata:
+      labels:
+        app: binacs-cn
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+        # binacs: select qcloud master
+        labelName: master
+      # hostNetwork: true
+      containers:
+      - name: binacs-cn-root
+        image: binacslee/binacs-cn:latest
+        #command: ["/bin/sh","-c","/work/server start --configFile /work/kubernetes/config.toml"]
+        command: ["/bin/sh","-c","/work/server start --configFile /kubernetes/config.toml"]
+        ports:
+          - name: http
+            # binacs: 80 => 9080
+            containerPort: 80
+            protocol: TCP
+          - name: https
+            # binacs: 443 => 9443
+            containerPort: 443
+            protocol: TCP
+          - name: grpc
+            containerPort: 9500
+            protocol: TCP
+        volumeMounts:
+        - name: binacs-cn-hostpath
+          mountPath: /kubernetes
+      volumes:
+      - name: binacs-cn-hostpath
+        hostPath:
+          path: /root/binacs/go-server/kubernetes-hostpath
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: binacs-cn-service
+  namespace: binacs-cn
+spec:
+  type: ClusterIP
+  selector:
+    app: binacs-cn
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  - name: https
+    port: 443
+    targetPort: 443
+  - name: grpc
+    port: 9500
+    targetPort: 9500
