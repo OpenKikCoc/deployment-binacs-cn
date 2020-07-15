@@ -4,8 +4,8 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
-  name: ingress-grpc
+    nginx.ingress.kubernetes.io/backend-protocol: "https"
+  name: ingress-https
   namespace: binacs-cn
 spec:
   rules:
@@ -15,18 +15,29 @@ spec:
       - backend:
           serviceName: binacs-cn-service
           servicePort: 443
+  tls:
+  - secretName: grpcs-secret
+    hosts:
+      - binacs.cn
+
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "http"
+  name: ingress-http
+  namespace: binacs-cn
+spec:
+  rules:
   - host: prometheus.binacs.cn
     http:
       paths:
       - backend:
           serviceName: monitor-service
           servicePort: 9090
-  - host: pushgateway.binacs.cn
-    http:
-      paths:
-      - backend:
-          serviceName: monitor-service
-          servicePort: 9091
   - host: grafana.binacs.cn
     http:
       paths:
@@ -39,7 +50,42 @@ spec:
       - backend:
           serviceName: jenkins-service
           servicePort: 8080
+  - host: gitbook.binacs.cn
+    http:
+      paths:
+      - backend:
+          serviceName: gitbook-service
+          servicePort: 
+  - host: kiki.binacs.cn
+    http:
+      paths:
+      - backend:
+          serviceName: gitbook-service
+          servicePort: 
   tls:
-  - secretName: grpcs-secret
+  - secretName: grpcs-secret-prometheus
     hosts:
-      - binacs.cn
+      - prometheus.binacs.cn
+  - secretName: grpcs-secret-grafana
+    hosts:
+      - grafana.binacs.cn
+  - secretName: grpcs-secret-jenkins
+    hosts:
+      - jenkins.binacs.cn
+  - secretName: grpcs-secret-gitbook
+    hosts:
+      - gitbook.binacs.cn
+  - secretName: grpcs-secret-kiki
+    hosts:
+      - kiki.binacs.cn
+
+#---
+#apiVersion: networking.k8s.io/v1beta1
+#kind: Ingress
+#metadata:
+#  annotations:
+#    kubernetes.io/ingress.class: "nginx"
+#    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+#    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+#  name: ingress-grpc
+#  namespace: binacs-cn

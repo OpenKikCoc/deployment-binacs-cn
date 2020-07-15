@@ -68,6 +68,18 @@ $ kubectl create secret tls grpcs-secret --key binacs.cn.key --cert binacs.cn.cr
 ```shell
 kubectl create secret -n <your namespace> tls grpcs-secret --key binacs.cn.key --cert binacs.cn.crt
 kubectl create secret -n binacs-cn tls grpcs-secret --key binacs.cn.key --cert binacs.cn.crt
+
+#
+kubectl create secret -n binacs-cn tls grpcs-secret-prometheus --key prometheus.binacs.cn.key --cert prometheus.binacs.cn.crt
+
+kubectl create secret -n binacs-cn tls grpcs-secret-grafana --key grafana.binacs.cn.key --cert grafana.binacs.cn.crt
+
+kubectl create secret -n binacs-cn tls grpcs-secret-jenkins --key jenkins.binacs.cn.key --cert jenkins.binacs.cn.crt
+
+kubectl create secret -n binacs-cn tls grpcs-secret-gitbook --key gitbook.binacs.cn.key --cert gitbook.binacs.cn.crt
+
+kubectl create secret -n binacs-cn tls grpcs-secret-kiki --key kiki.binacs.cn.key --cert kiki.binacs.cn.crt
+
 ```
 
 
