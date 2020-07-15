@@ -57,11 +57,19 @@ sudo chown -R 1000:1000 /var/jenkins_home
 
 ### 2.3 ingress
 
-创建名为 grpcs-secret 的 secret ：
+创建名为 grpcs-secret 的 secret :
 
 ```shell
 $ kubectl create secret tls grpcs-secret --key binacs.cn.key --cert binacs.cn.crt
 ```
+
+指定 namespace :
+
+```shell
+kubectl create secret -n <your namespace> tls grpcs-secret --key binacs.cn.key --cert binacs.cn.crt
+kubectl create secret -n binacs-cn tls grpcs-secret --key binacs.cn.key --cert binacs.cn.crt
+```
+
 
 在 `ingress.yml` 中需设置该 tls 字段
 
