@@ -57,13 +57,23 @@ sudo chown -R 1000:1000 /var/jenkins_home
 
 ### 2.3 ingress
 
+防火墙:
+
+```shell
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -F
+iptables -L -n
+```
+
+
 创建名为 grpcs-secret 的 secret :
 
 ```shell
 $ kubectl create secret tls grpcs-secret --key binacs.cn.key --cert binacs.cn.crt
 ```
 
-指定 namespace :
+创建 secret （指定 namespace） :
 
 ```shell
 kubectl create secret -n <your namespace> tls grpcs-secret --key binacs.cn.key --cert binacs.cn.crt
@@ -71,6 +81,8 @@ kubectl create secret -n binacs-cn tls grpcs-secret --key binacs.cn.key --cert b
 
 #
 kubectl create secret -n binacs-cn tls grpcs-secret-prometheus --key prometheus.binacs.cn.key --cert prometheus.binacs.cn.crt
+
+kubectl create secret -n binacs-cn tls grpcs-secret-pushgateway --key pushgateway.binacs.cn.key --cert pushgateway.binacs.cn.crt
 
 kubectl create secret -n binacs-cn tls grpcs-secret-grafana --key grafana.binacs.cn.key --cert grafana.binacs.cn.crt
 
@@ -84,13 +96,6 @@ kubectl create secret -n binacs-cn tls grpcs-secret-kiki --key kiki.binacs.cn.ke
 
 
 在 `ingress.yml` 中需设置该 tls 字段
-
-随后：
-
-`ingress-nginx-collector-simple.yml`
-
-`ingress-nginx-service-simple.yml`
-
 
 
 

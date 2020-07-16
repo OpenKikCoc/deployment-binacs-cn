@@ -15,10 +15,19 @@ spec:
       - backend:
           serviceName: binacs-cn-service
           servicePort: 443
+  - host: grafana.binacs.cn
+    http:
+      paths:
+      - backend:
+          serviceName: monitor-service
+          servicePort: 3000
   tls:
   - secretName: grpcs-secret
     hosts:
       - binacs.cn
+  - secretName: grpcs-secret-grafana
+    hosts:
+      - grafana.binacs.cn
 
 ---
 apiVersion: networking.k8s.io/v1beta1
@@ -38,12 +47,6 @@ spec:
       - backend:
           serviceName: monitor-service
           servicePort: 9090
-  - host: grafana.binacs.cn
-    http:
-      paths:
-      - backend:
-          serviceName: monitor-service
-          servicePort: 8080
   - host: jenkins.binacs.cn
     http:
       paths:
@@ -60,15 +63,12 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: gitbook-service
+          serviceName: kiki-service
           servicePort: 
   tls:
   - secretName: grpcs-secret-prometheus
     hosts:
       - prometheus.binacs.cn
-  - secretName: grpcs-secret-grafana
-    hosts:
-      - grafana.binacs.cn
   - secretName: grpcs-secret-jenkins
     hosts:
       - jenkins.binacs.cn
@@ -78,6 +78,26 @@ spec:
   - secretName: grpcs-secret-kiki
     hosts:
       - kiki.binacs.cn
+
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    #nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    #nginx.ingress.kubernetes.io/whitelist-source-range: 10.244.0.0/16, xxxx
+    nginx.ingress.kubernetes.io/backend-protocol: "http"
+  name: ingress-http-pushgateway
+  namespace: binacs-cn
+spec:
+  rules:
+  - host: pushgateway.binacs.cn
+    http:
+      paths:
+      - backend:
+          serviceName: monitor-service
+          servicePort: 9091
 
 #---
 #apiVersion: networking.k8s.io/v1beta1
