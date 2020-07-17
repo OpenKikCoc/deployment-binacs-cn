@@ -53,6 +53,12 @@ spec:
       - backend:
           serviceName: jenkins-service
           servicePort: 8080
+  - host: docs.binacs.cn
+    http:
+      paths:
+      - backend:
+          serviceName: docs-service
+          servicePort: 3000
   - host: gitbook.binacs.cn
     http:
       paths:
@@ -75,6 +81,9 @@ spec:
   - secretName: grpcs-secret-gitbook
     hosts:
       - gitbook.binacs.cn
+  - secretName: grpcs-secret-docs
+    hosts:
+      - docs.binacs.cn
   - secretName: grpcs-secret-kiki
     hosts:
       - kiki.binacs.cn

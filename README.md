@@ -90,6 +90,8 @@ kubectl create secret -n binacs-cn tls grpcs-secret-jenkins --key jenkins.binacs
 
 kubectl create secret -n binacs-cn tls grpcs-secret-gitbook --key gitbook.binacs.cn.key --cert gitbook.binacs.cn.crt
 
+kubectl create secret -n binacs-cn tls grpcs-secret-docs --key docs.binacs.cn.key --cert docs.binacs.cn.crt
+
 kubectl create secret -n binacs-cn tls grpcs-secret-kiki --key kiki.binacs.cn.key --cert kiki.binacs.cn.crt
 
 ```
@@ -106,7 +108,8 @@ kubectl create secret -n binacs-cn tls grpcs-secret-kiki --key kiki.binacs.cn.ke
 3.  monitor
 4.  jenkins
 5.  gitbook
-6.  ingress
+6.  docs
+7.  ingress
 
 
 

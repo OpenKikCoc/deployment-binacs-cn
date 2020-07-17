@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: docs-deployment
+  namespace: binacs-cn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: docs
+  template:
+    metadata:
+      labels:
+        app: docs
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+        labelName: monitor
+      containers:
+      - name: docs
+        image: binacslee/docsify:latest
+        command: ["/usr/local/bin/docsify", "serve", "/work/docs"]
+        ports:
+          - name: docs-port
+            containerPort: 3000
+            protocol: TCP
+        volumeMounts:
+        - name: docs-hostpath
+          mountPath: /work
+        - name: docs-time
+          mountPath: /etc/localtime
+      volumes:
+      - name: docs-hostpath
+        hostPath:
+          path: /root/docsify
+      - name: docs-time
+        hostPath:
+          path: /etc/localtime
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: docs-service
+  namespace: binacs-cn
+spec:
+  type: ClusterIP
+  selector:
+    app: docs
+  ports:
+  - name: docs
+    port: 3000
+    targetPort: 3000
