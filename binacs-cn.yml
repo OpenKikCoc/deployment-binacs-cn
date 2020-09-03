@@ -38,6 +38,13 @@ spec:
         volumeMounts:
         - name: binacs-cn-hostpath
           mountPath: /kubernetes
+      - name: binacs-cn-root-redis
+        image: redis:latest
+        command: ["redis-server", "--requirepass", "password"]
+        ports:
+          - name: rds
+            containerPort: 6379
+            protocol: TCP
       volumes:
       - name: binacs-cn-hostpath
         hostPath:
