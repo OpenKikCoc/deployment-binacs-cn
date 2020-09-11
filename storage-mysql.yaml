@@ -1,0 +1,68 @@
+#apiVersion: apps/v1beta1
+apiVersion: apps/v1
+#kind: StatefulSet
+kind: Deployment
+metadata:
+  #name: mysql-statefulset
+  name: mysql-deployment
+  namespace: binacs-cn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+        labelName: storage
+      hostNetwork: true
+      containers:
+      - name: mysql
+        image: mysql:latest
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "password"
+        ports:
+        - name: mysql-3306
+          containerPort: 3306
+        - name: mysql-3307
+          containerPort: 3307
+        volumeMounts:
+        - name: storage-mysql-hostpath
+          mountPath: /var/lib/mysql
+        resources:
+          requests:
+            cpu: 300m
+            memory: 500M
+      volumes:
+      - name: storage-mysql-hostpath
+        hostPath:
+          path: /data/mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+  namespace: binacs-cn
+spec:
+  type: ClusterIP
+  selector:
+    app: mysql
+  ports:
+  - name: mysql-3306
+    port: 3306
+    targetPort: 3306
+  - name: mysql-3307
+    port: 3307
+    targetPort: 3307
+
+
+# 1. docker exec -it cname /bin/sh
+# $ 2. mysql -uroot -password
+# $ 3. use mysql;
+# $ 4. ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
+# $ 5. FLUSH PRIVILEGES;
