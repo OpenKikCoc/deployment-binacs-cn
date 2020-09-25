@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: traceroute-deployment
+  namespace: binacs-cn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: binacs-cn
+  template:
+    metadata:
+      labels:
+        app: binacs-cn
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+        # binacs: select qcloud master
+        labelName: master
+      # hostNetwork: true
+      containers:
+      - name: traceroute
+        image: jess/traceroute:latest
+        command: ["/bin/sh","-c","tail -f /dev/null"]
