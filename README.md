@@ -17,6 +17,7 @@ Kubernetes deployment files.
 |            gitbook             |          -          |  gitbook-service  |                      | binacs-cn |      amd      |
 |            docsify             |          -          |   docs-service    |   docs-deployment    | binacs-cn | node selector |
 |          crypto-func           |          -          |         -         |          -           |     -     |       -       |
+|             jaeger             |  binacs-aliyun-02   |  jaeger-service   |  jaeger-deployment   | binacs-cn | node selector |
 
 
 
@@ -95,6 +96,7 @@ kubectl create secret -n binacs-cn tls grpcs-secret-docs --key docs.binacs.cn.ke
 
 kubectl create secret -n binacs-cn tls grpcs-secret-kiki --key kiki.binacs.cn.key --cert kiki.binacs.cn.crt
 
+kubectl create secret -n binacs-cn tls grpcs-secret-jaeger --key jaeger.binacs.cn.key --cert jaeger.binacs.cn.crt
 ```
 
 

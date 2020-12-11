@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kiki-deployment
+  namespace: binacs-cn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kiki
+  template:
+    metadata:
+      labels:
+        app: kiki
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+        labelName: monitor
+      containers:
+      - name: docs
+        image: binacslee/docsify:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/usr/local/bin/docsify", "serve", "/work/docs"]
+        ports:
+          - name: kiki-port
+            containerPort: 3000
+            protocol: TCP
+        volumeMounts:
+        - name: kiki-hostpath
+          mountPath: /work
+        - name: kiki-time
+          mountPath: /etc/localtime
+      volumes:
+      - name: kiki-hostpath
+        hostPath:
+          path: /root/kiki
+      - name: kiki-time
+        hostPath:
+          path: /etc/localtime
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kiki-service
+  namespace: binacs-cn
+spec:
+  type: ClusterIP
+  selector:
+    app: kiki
+  ports:
+  - name: docs
+    port: 3000
+    targetPort: 3000
