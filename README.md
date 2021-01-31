@@ -97,6 +97,8 @@ kubectl create secret -n binacs-cn tls grpcs-secret-docs --key docs.binacs.cn.ke
 kubectl create secret -n binacs-cn tls grpcs-secret-kiki --key kiki.binacs.cn.key --cert kiki.binacs.cn.crt
 
 kubectl create secret -n binacs-cn tls grpcs-secret-jaeger --key jaeger.binacs.cn.key --cert jaeger.binacs.cn.crt
+
+kubectl create secret -n binacs-cn tls grpcs-secret-api --key api.binacs.cn.key --cert api.binacs.cn.crt
 ```
 
 
@@ -107,15 +109,10 @@ kubectl create secret -n binacs-cn tls grpcs-secret-jaeger --key jaeger.binacs.c
 ## 3. 顺序
 
 1.  namespace
-2.  binacs-cn
-3.  monitor
-4.  jenkins
-5.  gitbook
-6.  docs
-7.  ingress
-
-
-
-
-
-
+2.  storage
+3.  binacs-cn
+4.  monitor
+5.  jenkins
+6.  kiki
+7.  docs
+8.  ingress
