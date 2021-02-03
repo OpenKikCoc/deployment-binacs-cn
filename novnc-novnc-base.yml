@@ -1,0 +1,46 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: novnc-novnc-base-deployment
+  namespace: binacs-cn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: novnc-base
+  template:
+    metadata:
+      labels:
+        app: novnc-base
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+        labelName: monitor
+      containers:
+      - name: novnc-base
+        image: binacslee/novnc-base:baseimage-cn
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DISPLAY_WIDTH
+          value: "1440"
+        - name: DISPLAY_HEIGHT
+          value: "900"
+        ports:
+          - name: port
+            containerPort: 10000
+            protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: novnc-novnc-base-service
+  namespace: binacs-cn
+spec:
+  type: ClusterIP
+  selector:
+    app: novnc-base
+  ports:
+  - name: port
+    port: 10000
+    targetPort: 10000

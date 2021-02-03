@@ -139,3 +139,59 @@ spec:
   - secretName: grpcs-secret-api
     hosts:
       - api.binacs.cn
+
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "http"
+    #nginx.ingress.kubernetes.io/rewrite-target: "/$2"
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: binacs-cn/basic-auth-novnc
+    nginx.ingress.kubernetes.io/auth-realm: "I will catch you ^_^, by binacs"
+  name: ingress-novnc
+  namespace: binacs-cn
+spec:
+  rules:
+  - host: novnc.binacs.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: novnc-novnc-base-service
+          servicePort: 10000
+  tls:
+  - secretName: grpcs-secret-novnc
+    hosts:
+      - novnc.binacs.cn
+
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "http"
+    #nginx.ingress.kubernetes.io/rewrite-target: "/$2"
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: binacs-cn/basic-auth-novnc
+    nginx.ingress.kubernetes.io/auth-realm: "I will catch you ^_^, by binacs"
+  name: ingress-vlc
+  namespace: binacs-cn
+spec:
+  rules:
+  - host: vlc.binacs.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: novnc-vlc-player-service
+          servicePort: 10000
+  tls:
+  - secretName: grpcs-secret-vlc
+    hosts:
+      - vlc.binacs.cn

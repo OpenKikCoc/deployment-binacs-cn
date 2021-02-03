@@ -1,0 +1,46 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: novnc-vlc-player-deployment
+  namespace: binacs-cn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vlc-player
+  template:
+    metadata:
+      labels:
+        app: vlc-player
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+        labelName: monitor
+      containers:
+      - name: vlc-player
+        image: binacslee/vlc-player:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DISPLAY_WIDTH
+          value: "1440"
+        - name: DISPLAY_HEIGHT
+          value: "900"
+        ports:
+          - name: port
+            containerPort: 10000
+            protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: novnc-vlc-player-service
+  namespace: binacs-cn
+spec:
+  type: ClusterIP
+  selector:
+    app: vlc-player
+  ports:
+  - name: port
+    port: 10000
+    targetPort: 10000

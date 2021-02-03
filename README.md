@@ -17,7 +17,7 @@ Kubernetes deployment files.
 |            gitbook             |          -          |  gitbook-service  |                      | binacs-cn |      amd      |
 |            docsify             |          -          |   docs-service    |   docs-deployment    | binacs-cn | node selector |
 |          crypto-func           |          -          |         -         |          -           |     -     |       -       |
-|             jaeger             |  binacs-aliyun-02   |  jaeger-service   |  jaeger-deployment   | binacs-cn | node selector |
+|             jaeger             |  binacs-qcloud-01   |  jaeger-service   |  jaeger-deployment   | binacs-cn | node selector |
 
 
 
@@ -99,6 +99,15 @@ kubectl create secret -n binacs-cn tls grpcs-secret-kiki --key kiki.binacs.cn.ke
 kubectl create secret -n binacs-cn tls grpcs-secret-jaeger --key jaeger.binacs.cn.key --cert jaeger.binacs.cn.crt
 
 kubectl create secret -n binacs-cn tls grpcs-secret-api --key api.binacs.cn.key --cert api.binacs.cn.crt
+
+kubectl create secret -n binacs-cn tls grpcs-secret-novnc --key novnc.binacs.cn.key --cert novnc.binacs.cn.crt
+
+# htpasswd -c auth-filename username
+# cp auth-filename auth
+# @ATTENTION https://longhorn.io/docs/0.8.0/users-guide/longhorn-ingress/
+#   It’s important the file generated is named auth (actually - that the secret has a key data.auth),
+#   otherwise the ingress-controller returns a 503
+kubectl create secret -n binacs-cn generic basic-auth-novnc --from-file=auth
 ```
 
 
@@ -112,7 +121,9 @@ kubectl create secret -n binacs-cn tls grpcs-secret-api --key api.binacs.cn.key 
 2.  storage
 3.  binacs-cn
 4.  monitor
-5.  jenkins
-6.  kiki
-7.  docs
-8.  ingress
+5.  jaeger
+6.  jenkins
+7.  kiki
+8.  docs
+9.  ingress
+
